@@ -40,7 +40,7 @@ fold.frames <- function(frame.list) {
 full.game.database <- function (extra.seasons=0) {
 
   game.roster <- NULL
-  seasons <- seq(20022003, 20152016, by=10001)[-3]
+  seasons <- seq(20022003, 20162017, by=10001)[-3]
 
 
   if (extra.seasons > 0) {
@@ -669,7 +669,7 @@ compile.all.games <- function (rdata.folder="nhlr-data",
     
     if (!is.null(seasons)) {
         message ("Overriding existing game table to create one with specified seasons.")
-        eligible.seasons <- seq(20022003, 20152016, by=10001)[-3]
+        eligible.seasons <- seq(20022003, 20162017, by=10001)[-3]
         if (!all(seasons %in% eligible.seasons)) stop ("Specified seasons must be within ", paste(eligible.seasons, collapse=", "))
         games <- full.game.database()
         games <- games[games$season %in% seasons,]
