@@ -2,7 +2,7 @@
 ##############################################################################
 #plotting elements for the rink proper.
 
-faceoff.circle = function (x,y, thiscol="red") {
+faceoff.circle = function (x,y, thiscol="gray85") {
   
   theta = seq(0,2*pi,length=300)
   #outer.
@@ -27,7 +27,7 @@ faceoff.circle = function (x,y, thiscol="red") {
             col=thiscol, lwd=2)
 }
 
-goal.crease = function (flip=1, fillcol="lightblue", thiscol="red") {
+goal.crease = function (flip=1, fillcol="gray95", thiscol="gray85") {
   xseq = seq(-4,4,length=100)
   polygon (c(-4, xseq, 4),
            flip*c(89, 83+xseq^2/4^2*1.5, 89),
@@ -38,9 +38,9 @@ rink.plot.blank = function (...) {
   plot(c(42.6,-42.6), c(101,0), ty="n", ylim=c(101,25), xlim=c(-42.6, 42.6), ylab="", xlab="", axes=FALSE, ...)
 }
 
-rink.plot = function (fresh=TRUE, thiscol="red", ...) {
+rink.plot = function (fresh=TRUE, thiscol="gray85", ...) {
   if (fresh) rink.plot.blank (...)
-  rect(-42.5, 25, 42.5, 26, col=4, border=4)
+  rect(-42.5, 25, 42.5, 26, col="gray75", border="gray75")
   lines (c(-42.5, 
            -42.5 + 28 - 28*cos(seq(0,pi/2,length=20)),
            42.5 - 28 + 28*cos(seq(pi/2,0,length=20)),
@@ -49,13 +49,13 @@ rink.plot = function (fresh=TRUE, thiscol="red", ...) {
            72 + 28*sin(seq(0,pi/2,length=20)),
            72 + 28*sin(seq(pi/2,0,length=20)),
            15),
-         col=1, lwd=2)
+         col="gray75", lwd=2)
 
   goal.line.extreme = 42.5 - 28 + sqrt(28^2 - (28-11)^2)
   
   lines(goal.line.extreme*c(-1, 1), rep(89,2), col=thiscol, lwd=2)        #the goal line.
   
-  lines(c(-3,-3,3,3), c(90,92,92,90)-1, col=1, lwd=3)    #the goal net.
+  lines(c(-3,-3,3,3), c(90,92,92,90)-1, col="gray45", lwd=3)    #the goal net.
   goal.crease(thiscol=thiscol)
   segments(c(-11, 11), c(89,89), c(-14,14), c(100,100), col=thiscol, lwd=2)
   
@@ -77,9 +77,9 @@ full.rink = function () {
   theta2 = seq (pi/2, 3*pi/2, length=300)
   polygon (42.5 + 10*cos(theta2), 10*sin(theta2), lwd=2, border=2)
   
-  rect(-42.5, 25, 42.5, 26, col=4, border=4)
-  rect(-42.5, -25, 42.5, -26, col=4, border=4)
-  rect(-42.5, -0.5, 42.5, 0.5, col=2, border=2)
+  rect(-42.5, 25, 42.5, 26, col="gray75", border=4)
+  rect(-42.5, -25, 42.5, -26, col="gray75", border=4)
+  rect(-42.5, -0.5, 42.5, 0.5, col="gray85", border=2)
 
   
   lines (c(-42.5, 
@@ -104,15 +104,15 @@ full.rink = function () {
   
   goal.line.extreme = 42.5 - 28 + sqrt(28^2 - (28-11)^2)
   
-  lines(goal.line.extreme*c(-1, 1), rep(89,2), col=2,lwd=2)        #the goal line.
-  lines(goal.line.extreme*c(-1, 1), rep(-89,2), col=2,lwd=2)        #the goal line.
+  lines(goal.line.extreme*c(-1, 1), rep(89,2), col="gray85",lwd=2)        #the goal line.
+  lines(goal.line.extreme*c(-1, 1), rep(-89,2), col="gray85",lwd=2)        #the goal line.
   
   lines(c(-3,-3,3,3), c(90,92,92,90)-1, col=1, lwd=3)    #the goal net.
   lines(c(-3,-3,3,3), -(c(90,92,92,90)-1), col=1, lwd=3)    #the goal net.
   goal.crease(); goal.crease(-1)
   ## traps.
   segments(c(-11, 11, -11, 11), c(89,89,-89,-89),
-           c(-14,14,-14,14), c(100,100, -100,-100), col=2, lwd=2)
+           c(-14,14,-14,14), c(100,100, -100,-100), col="gray85", lwd=2)
   
   faceoff.circle (-22, 69)
   faceoff.circle (22, 69)
@@ -123,7 +123,7 @@ full.rink = function () {
   faceoff.dot = function (x,y) {
       polygon (x + 1*cos(theta),
                y + 1*sin(theta),
-               col=2,
+               col="gray85",
                border=2)
   }
   faceoff.dot (22,20); faceoff.dot (22,-20); faceoff.dot (-22,20); faceoff.dot (-22,-20);
