@@ -38,7 +38,14 @@ rink.plot.blank = function (...) {
   plot(c(42.6,-42.6), c(101,0), ty="n", ylim=c(101,25), xlim=c(-42.6, 42.6), ylab="", xlab="", axes=FALSE, ...)
 }
 
+#' Plot blank rink for use with points()
+#'
+#' @param fresh Whether or not to start with rink.plot.blank() for fresh plot
+#' @param thiscol Base color for goal crease, line segments, faceoff cirlces
+#' @param ... Args passed to rink.plot.
+#' @export
 rink.plot = function (fresh=TRUE, thiscol="gray85", ...) {
+  
   if (fresh) rink.plot.blank (...)
   rect(-42.5, 25, 42.5, 26, col="gray75", border="gray75")
   lines (c(-42.5, 
