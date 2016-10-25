@@ -116,7 +116,7 @@ full.game.database <- function (extra.seasons=0) {
       6,5,7,7,5,7,4,6, 5,5,7,7, 4,5, 6, #2013
       5,4,6,7,7,6,6,7, 7,7,6,7, 6,7, 5, #2014
       6,7,5,7,6,6,4,6, 6,7,4,5, 7,7, 6, #2015
-      ##rep(7,15),
+      rep(7,15),
       rep(7, 15*(extra.seasons+1)))  #,matrix( nrow=15)
   sequence.seven <- function(nn) c(rep(1, nn), rep(0, 7-nn))
   playoff.status <- c(sapply(playoff.series.lengths, sequence.seven))
