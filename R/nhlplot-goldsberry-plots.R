@@ -34,11 +34,11 @@ hexagon.coords.single <- function (x=0, y=0, radius=2.01) {
   coords
 }
 hexagon.coords.auto <- function (xygrid, relative.size=0.8) {
-  
+
   output <- matrix(NA, nrow=nrow(xygrid)*7, ncol=2)
   new.size <- relative.size*max(abs(xygrid[1,1] - xygrid[2,1]), abs(xygrid[1,2] - xygrid[2,2]))/2
   for (kk in 1:nrow(xygrid))
-    output[1:6 + (kk-1)*7,] <- hexagon.coords.single (xygrid[kk,1], 
+    output[1:6 + (kk-1)*7,] <- hexagon.coords.single (xygrid[kk,1],
                                                       xygrid[kk,2],
                                                       new.size)
   return(output)
@@ -46,7 +46,7 @@ hexagon.coords.auto <- function (xygrid, relative.size=0.8) {
 
 hexagon.coords.ordinal <- function (scatter.grid, sizes) {
   #print(sizes)
-  
+
   new.size <- rep(0, length(sizes))
   new.size[sizes >= 1] <- new.size[sizes >= 1] + 0.3
   new.size[sizes >= 2] <- new.size[sizes >= 2] + 0.3
@@ -54,7 +54,7 @@ hexagon.coords.ordinal <- function (scatter.grid, sizes) {
   new.size <- new.size * scatter.grid$radius
   output <- matrix(NA, nrow=length(sizes)*7, ncol=2)
   for (kk in 1:length(sizes))
-    output[1:6 + (kk-1)*7,] <- hexagon.coords.single (scatter.grid$grid[kk,1], 
+    output[1:6 + (kk-1)*7,] <- hexagon.coords.single (scatter.grid$grid[kk,1],
                                                       scatter.grid$grid[kk,2],
                                                       new.size[kk])
   return(output)
@@ -75,12 +75,12 @@ in.tri.rev <- function (tr=matrix(c(0,0.5,1, 0,1,0), nrow=3), xy.points) in.tria
 
 pick.section.side <- function (xy.points) {
   data(quadsarrayplot)
-  
+
   in.1 <- apply(quadsarrayplot[1:3,,], 3, in.tri.rev, xy.points)
   in.2 <- apply(quadsarrayplot[c(1,3,4),,], 3, in.tri.rev, xy.points)
   picks <- in.1 | in.2
   picks[is.na(picks)] <- FALSE
-  
+
   picker <- function (row) if (sum(row)>0) min(which(row)) else 0
   sections <- apply (picks, 1, picker)
   return(sections)
@@ -90,7 +90,7 @@ pick.section.side <- function (xy.points) {
 ############################################################################
 # Point grid for binning.
 point.grid <- function (xbins=31, xrange=c(-42.5, 42.5), yrange=c(-1,100)) {
-  
+
   radius <- 85/(2*xbins)
   initial.x <- seq(xrange[1]+radius, xrange[2]-radius, length=xbins)
   shifted.x <- seq(xrange[1], xrange[2], length=xbins+1)
@@ -104,29 +104,29 @@ point.grid <- function (xbins=31, xrange=c(-42.5, 42.5), yrange=c(-1,100)) {
   }
   scatter.grid <- data.frame(plotting.x=scatter.grid[,1], plotting.y=scatter.grid[,2])
   scatter.grid <- subset(scatter.grid, plotting.y < yrange[2])
-  
+
   uniques <- t(expand.grid(xx=(-42):42, yy=0:100))
   dist2 <- function (single.plot) which.min((scatter.grid[,1] - single.plot[1])^2 +
                                               (scatter.grid[,2] - single.plot[2])^2)
   bins <- apply(uniques, 2, dist2)
-  
+
   zone.section <- pick.section.side (scatter.grid)
   zone.section.bigblock <- three.superblocks()[zone.section]
-  
+
   output <- list(grid=scatter.grid,
                  uniques=cbind(t(uniques), bins),
-                 
+
                  zone.section=zone.section,
                  zone.unique=1:max(zone.section),
-                 
+
                  zone.section.bigblock=zone.section.bigblock,
                  zone.bigblock.unique=1:max(zone.section.bigblock),
-                 
+
                  xbins=xbins,
                  radius=radius)
-  
+
   return(output)
-  
+
 }
 
 ###################################################################################
@@ -146,7 +146,7 @@ hexbin.quick <- function (xycoords, scatter.grid) {
 
 table.complete <- function (vec, count) sapply(1:count, function (cc) sum(vec==cc, na.rm=TRUE))
 
-nhl.hexbin <- function (xycoords, scatter.grid) { 
+nhl.hexbin <- function (xycoords, scatter.grid) {
   code.u <- scatter.grid$uniques[,1] + 100*scatter.grid$uniques[,2]
   code.xy <- xycoords[,1] + 100*xycoords[,2]
   bins.2 <- scatter.grid$uniques[match(code.xy, code.u),3]
@@ -156,7 +156,7 @@ nhl.hexbin <- function (xycoords, scatter.grid) {
 
 nhl.zonebin.prime <- function (bin.counts, scatter.grid, use.superblocks=FALSE) {
   #sum up over bins in each zone. Redistribute over bins.
-  
+
   if (use.superblocks) {
     retval <- sapply(scatter.grid$zone.bigblock.unique, function(bb)
       sum(bin.counts[scatter.grid$zone.section.bigblock == bb], na.rm=TRUE))
@@ -165,7 +165,7 @@ nhl.zonebin.prime <- function (bin.counts, scatter.grid, use.superblocks=FALSE) 
       sum(bin.counts[scatter.grid$zone.section == bb], na.rm=TRUE))
   }
   return(retval)
-  
+
 }
 
 nhl.zonebin <- function (bin.counts, scatter.grid, use.superblocks=FALSE) {
@@ -183,16 +183,16 @@ nhl.zonebin <- function (bin.counts, scatter.grid, use.superblocks=FALSE) {
 
 
 rink.hexplot <- function (scatter.grid, sizes, colors, bordercolor=NA, ...) {
-  
+
   #sizes is now ordinal: 0=none, 1=0.4, 2=0.8, 3=0.8 black border
   par(mar=c(0, 0, 3, 0))
   rink.plot(...) #...)
   hex.coords <- hexagon.coords.ordinal(scatter.grid, sizes)
   colors[sizes==0] <- 0
-  
+
   bordercolor <- rep(bordercolor, length(colors)); bordercolor[sizes == 0] <- NA
   polygon(hex.coords, col=colors, border=bordercolor, lwd=2)
-  
+
 }
 
 rink.hexplot.auto <- function (scatter.grid, sizes, colors, ...) {
@@ -206,27 +206,27 @@ shot.bin.set <- function (event.df,
   #message(coordnames)
   all.shots <- nhl.hexbin (event.df[,coordnames], scatter.grid)
   all.goals <- nhl.hexbin (subset(event.df, etype=="GOAL")[,coordnames], scatter.grid)
-  
+
   bin.shots <- nhl.zonebin (all.shots, scatter.grid)
   bin.goals <- nhl.zonebin (all.goals, scatter.grid)
-  
+
   superbin.shots <- nhl.zonebin (all.shots, scatter.grid, use.superblocks=TRUE)
   superbin.goals <- nhl.zonebin (all.goals, scatter.grid, use.superblocks=TRUE)
-  
-  
+
+
   return(cbind(all.shots=all.shots,
                all.goals=all.goals,
-               
+
                binned.frac=bin.goals/bin.shots,
-               
+
                bin.shots=bin.shots,
                bin.goals=bin.goals,
-               
+
                superbin.shots=superbin.shots,
                superbin.goals=superbin.goals
-               
+
   ))
-  
+
 }
 
 shot.bin.set.blocks <- function (event.df,
@@ -234,16 +234,16 @@ shot.bin.set.blocks <- function (event.df,
                                  coordnames=c("ycoord","xcoord")
                                  , use.superblocks=FALSE
 ) {
-  
+
   #message(coordnames)
   all.shots <- nhl.zonebin.prime(nhl.hexbin (event.df[,coordnames], scatter.grid),
                                  scatter.grid, use.superblocks)
   all.goals <- nhl.zonebin.prime(nhl.hexbin (subset(event.df, etype=="GOAL")[,coordnames], scatter.grid),
                                  scatter.grid, use.superblocks)
-  
+
   return(cbind(all.shots=all.shots,
                all.goals=all.goals))
-  
+
 }
 
 
@@ -251,7 +251,7 @@ shot.bin.set.blocks <- function (event.df,
 
 #' run_hexbin
 #'
-#' Runs a hexbin plot routine based on either total shots or total goals for a game dataframe. 
+#' Runs a hexbin plot routine based on either total shots or total goals for a game dataframe.
 #'
 #' @param grand.data A game (or season/team/whatever) dataframe
 #' @param type "sg" for a combined shots and goals plot, "g" for a goals-only plot
@@ -261,18 +261,18 @@ shot.bin.set.blocks <- function (event.df,
 run_hexbin <- function(grand.data, type ="sg") {
   grand.data$newxc = abs(grand.data$newxc)
   grand.data$shot.feature = NA
-  hexshots = produce.hexshots(grand.data %>% filter(ev.team == "DET"))
-  
+  hexshots = produce.hexshots(grand.data)
+
   # rawcounts
   foo = data.frame(shots = nhl.hexbin(subset(grand.data,grand.data$etype == "SHOT")[,c("newyc","newxc")],point.grid())
                    , goals = nhl.hexbin(subset(grand.data,grand.data$etype == "GOAL")[,c("newyc","newxc")],point.grid()))
-  
+
   bar = data.frame(bin = 1:16, shots =  nhl.zonebin.prime(foo$shots,point.grid()), goals =  nhl.zonebin.prime(foo$goals,point.grid()))
-  
-  
+
+
   base.colors = absolute.binning( bar$goals / bar$shots )
   colors = base.colors[point.grid()$zone.section]
-  
+
   if (type=="sg") {
     rink.hexplot.auto(point.grid(), foo$shots + foo$goals, colors)
   } else if (type == "g") {
@@ -282,7 +282,7 @@ run_hexbin <- function(grand.data, type ="sg") {
 
 #' run_dotplot
 #'
-#' Produces a simple dot plot based on either total shots or total goals for a game dataframe. 
+#' Produces a simple dot plot based on either total shots or total goals for a game dataframe.
 #'
 #' @param grand.data A game (or season/team/whatever) dataframe
 #' @param type "sg" for a combined shots and goals plot, "g" for a goals-only plot
@@ -295,17 +295,12 @@ run_dotplot <- function(grand.data,type="sg") {
     with( subset(grand.data, grand.data$etype == "SHOT"),
           points(ycoord,(xcoord),pch=16,col='#55cc55',cex=1.5)
     )
-    with(subset(grand.data,grand.data$etype == "GOAL"), 
+    with(subset(grand.data,grand.data$etype == "GOAL"),
          points(ycoord,abs(xcoord),pch=16,col='#5555cc',cex=1.5)
     )
   } else if (type=="g") {
-    with(subset(grand.data,grand.data$etype == "GOAL"), 
+    with(subset(grand.data,grand.data$etype == "GOAL"),
          points(ycoord,abs(xcoord),pch=16,col='#5555cc',cex=1.5)
     )
   }
 }
-
-
-
-
-
