@@ -85,13 +85,13 @@ full.rink = function () {
   par(mar=c(0,0,0,0))
   plot(c(-42.6, 42.6), c(-101,101), ty="n", ylim=c(-101,101), xlim=c(-42.6, 42.6), ylab="", xlab="", axes=FALSE)
 
-  polygon (15*cos(theta), 15*sin(theta), lwd=2, border=4)
+  polygon (15*cos(theta), 15*sin(theta), lwd=2, border="gray75")
   theta2 = seq (pi/2, 3*pi/2, length=300)
-  polygon (42.5 + 10*cos(theta2), 10*sin(theta2), lwd=2, border=2)
+  polygon (42.5 + 10*cos(theta2), 10*sin(theta2), lwd=2, border="gray85")
   
-  rect(-42.5, 25, 42.5, 26, col="gray75", border=4)
-  rect(-42.5, -25, 42.5, -26, col="gray75", border=4)
-  rect(-42.5, -0.5, 42.5, 0.5, col="gray85", border=2)
+  rect(-42.5, 25, 42.5, 26, col="gray75", border="gray75")
+  rect(-42.5, -25, 42.5, -26, col="gray75", border="gray75")
+  rect(-42.5, -0.5, 42.5, 0.5, col="gray85", border="gray85")
 
   
   lines (c(-42.5, 
@@ -136,7 +136,7 @@ full.rink = function () {
       polygon (x + 1*cos(theta),
                y + 1*sin(theta),
                col="gray85",
-               border=2)
+               border="gray75")
   }
   faceoff.dot (22,20); faceoff.dot (22,-20); faceoff.dot (-22,20); faceoff.dot (-22,-20);
   
