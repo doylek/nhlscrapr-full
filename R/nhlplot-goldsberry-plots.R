@@ -247,8 +247,63 @@ shot.bin.set.blocks <- function (event.df,
 }
 
 
+### START KD PLOT FUNCTIONS
 
+#' run_hexbin
+#'
+#' Runs a hexbin plot routine based on either total shots or total goals for a game dataframe. 
+#'
+#' @param grand.data A game (or season/team/whatever) dataframe
+#' @param type "sg" for a combined shots and goals plot, "g" for a goals-only plot
+#'
+#' @return
+#' @export
+run_hexbin <- function(grand.data, type ="sg") {
+  grand.data$newxc = abs(grand.data$newxc)
+  grand.data$shot.feature = NA
+  hexshots = produce.hexshots(grand.data %>% filter(ev.team == "DET"))
+  
+  # rawcounts
+  foo = data.frame(shots = nhl.hexbin(subset(grand.data,grand.data$etype == "SHOT")[,c("newyc","newxc")],point.grid())
+                   , goals = nhl.hexbin(subset(grand.data,grand.data$etype == "GOAL")[,c("newyc","newxc")],point.grid()))
+  
+  bar = data.frame(bin = 1:16, shots =  nhl.zonebin.prime(foo$shots,point.grid()), goals =  nhl.zonebin.prime(foo$goals,point.grid()))
+  
+  
+  base.colors = absolute.binning( bar$goals / bar$shots )
+  colors = base.colors[point.grid()$zone.section]
+  
+  if (type=="sg") {
+    rink.hexplot.auto(point.grid(), foo$shots + foo$goals, colors)
+  } else if (type == "g") {
+    rink.hexplot.auto(point.grid(), foo$goals, colors)
+  }
+}
 
+#' run_dotplot
+#'
+#' Produces a simple dot plot based on either total shots or total goals for a game dataframe. 
+#'
+#' @param grand.data A game (or season/team/whatever) dataframe
+#' @param type "sg" for a combined shots and goals plot, "g" for a goals-only plot
+#'
+#' @return
+#' @export
+run_dotplot <- function(grand.data,type="sg") {
+  rink.plot()
+  if (type=="sg") {
+    with( subset(grand.data, grand.data$etype == "SHOT"),
+          points(ycoord,(xcoord),pch=16,col='#55cc55',cex=1.5)
+    )
+    with(subset(grand.data,grand.data$etype == "GOAL"), 
+         points(ycoord,abs(xcoord),pch=16,col='#5555cc',cex=1.5)
+    )
+  } else if (type=="g") {
+    with(subset(grand.data,grand.data$etype == "GOAL"), 
+         points(ycoord,abs(xcoord),pch=16,col='#5555cc',cex=1.5)
+    )
+  }
+}
 
 
 
