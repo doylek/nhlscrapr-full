@@ -38,6 +38,8 @@ rink.plot.blank = function (...) {
   plot(c(42.6,-42.6), c(101,0), ty="n", ylim=c(101,25), xlim=c(-42.6, 42.6), ylab="", xlab="", axes=FALSE, ...)
 }
 
+#' rink.plot
+#' 
 #' Plot blank rink for use with points()
 #'
 #' @param fresh Whether or not to start with rink.plot.blank() for fresh plot
@@ -72,8 +74,11 @@ rink.plot = function (fresh=TRUE, thiscol="gray85", ...) {
 
 
 
-
-
+#' full.rink
+#' 
+#' Plot a full, blank rink for use with points()
+#'
+#' @export
 full.rink = function () {
 
   theta = seq(0,2*pi,length=300)

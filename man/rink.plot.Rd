@@ -2,7 +2,7 @@
 % Please edit documentation in R/nhlplot-rink-elements.R
 \name{rink.plot}
 \alias{rink.plot}
-\title{Plot blank rink for use with points()}
+\title{rink.plot}
 \usage{
 rink.plot(fresh = TRUE, thiscol = "gray85", ...)
 }
