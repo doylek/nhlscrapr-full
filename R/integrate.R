@@ -629,8 +629,8 @@ compile.all.games <- function (rdata.folder="nhlr-data",
                                roster.dropin=NULL,
                                reload.games=FALSE,
 
-                               ## override.download=FALSE,
-                               
+                               override.download=FALSE,
+                               reprocess=FALSE,
                                #time.check=FALSE,
                                
                                ...) {
@@ -728,7 +728,7 @@ compile.all.games <- function (rdata.folder="nhlr-data",
             tryme <- try({
       
                 game.info <- retrieve.game(sub.games$season[kk], sub.games$gcode[kk],
-                                           rdata.folder, force=FALSE)
+                                           rdata.folder, force=reprocess)
                 ##message (sub.games$season[kk], " ", sub.games$gcode[kk], " ", game.info$status)
                 
                 doit <- FALSE
@@ -737,8 +737,8 @@ compile.all.games <- function (rdata.folder="nhlr-data",
                 
                 if (doit) {
                     game.info <-     ## re-download it.
-                        process.single.game(sub.games$season[kk], sub.games$gcode[kk],
-                                            rdata.folder=rdata.folder, override.download=TRUE, ...)
+                        process.game(sub.games$season[kk], sub.games$gcode[kk],
+                                            rdata.folder=rdata.folder, override.download=override.download, ...)
                     if (game.info$status %in% 2:3) downloaded.games <- c(downloaded.games, paste0(sub.games$season[kk], sub.games$gcode[kk]))
                 }
       
