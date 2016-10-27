@@ -745,7 +745,7 @@ compile.all.games <- function (rdata.folder="nhlr-data",
                 
                 if (doit) {
                     game.info <-     ## re-download it.
-                        process.game(sub.games$season[kk], sub.games$gcode[kk],
+                        process.single.game(sub.games$season[kk], sub.games$gcode[kk],
                                             rdata.folder=rdata.folder, override.download=override.download, ...)
                     if (game.info$status %in% 2:3) downloaded.games <- c(downloaded.games, paste0(sub.games$season[kk], sub.games$gcode[kk]))
                 }
