@@ -133,6 +133,14 @@ full.game.database <- function (extra.seasons=0) {
 }
 
 
+#' current.games
+#' 
+#' Lists currently process games that are available for use with \code{\link{retrieve.game}}
+#'
+#' @param rdata.folder Folder in which data from nhlscrapr is saved.
+#'
+#' @return
+#' @export
 current.games <- function (rdata.folder="nhlr-data") {
 
     records <- list.files (rdata.folder)
@@ -578,7 +586,7 @@ construct.rosters.from.list <- function (roster.collection,  #raw list
         
         return(subroster)
     }
-    roster.master.2 <- roster.master %>% group_by (player.id) %>% do(subpush(.)) ##%>% rbind_all
+    roster.master.2 <- roster.master %>% group_by (player.id) %>% do(subpush(.)) ##%>% bind_rows
 
     ## There are a few manual corrections.
     roster.master.2$woi.id[roster.master.2$firstlast == "ALEXANDRE PICARD"] <- "picaral851009"
@@ -792,7 +800,7 @@ compile.all.games <- function (rdata.folder="nhlr-data",
                 return(out)
             })
 
-            secondary.data <- rbind_all(new.pbp.2)    ## fold.frames(new.pbp.2)
+            secondary.data <- bind_rows(new.pbp.2)    ## fold.frames(new.pbp.2)
             secondary.data$adjusted.distance <- NA
             secondary.data$shot.feature <- rushes.rebounds (secondary.data)  ## new
             secondary.data$import.ies <- 0   #xycoords: 0, imputed, espn, sportsnet
