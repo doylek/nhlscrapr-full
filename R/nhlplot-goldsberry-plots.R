@@ -285,22 +285,22 @@ run_hexbin <- function(grand.data, type ="sg") {
 #' Produces a simple dot plot based on either total shots or total goals for a game dataframe.
 #'
 #' @param grand.data A game (or season/team/whatever) dataframe.
-#' @param etype Vector indicating event types to be plotted.
-#' @param colors Vector giving color for each event type. Must be multiple of event type.
+#' @param plot.etype Vector indicating event types to be plotted.
+#' @param plot.colors Vector giving color for each event type. Must be multiple of event type.
 #'
 #' @return
 #' @export
-run_dotplot <- function(grand.data,etype=c("SHOT","GOAL"),colors=c("red","blue")) {
+run_dotplot = function(grand.data,plot.etype=c("SHOT","GOAL"),plot.colors=c("red","green")) {
   
-  if ( length(etype) %% length(colors) != 0 ) {
+  if ( length(plot.etype) %% length(plot.colors) != 0 ) {
     stop('etype argument must be equal in length or a multiple of colors argument.')
   }
   
   rink.plot()
   ## my s/g colors: '#55cc55' , '#5555cc'
-  for (i in etype) {
-    with( subset(grand.data, grand.data$etype == etype[i]),
-          points(ycoord,(xcoord),pch=16,col=colors[i],cex=1.5)
+  for (i in 1:length(plot.etype)) {
+    with( subset(grand.data, grand.data$etype == plot.etype[i]),
+          points(ycoord,(xcoord),pch=16,col=plot.colors[i],cex=1.5)
     )
   }
 }

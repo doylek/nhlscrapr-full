@@ -165,18 +165,18 @@ download.single.game <- function (season=20122013, gcode=20001, rdata.folder="nh
     game.rec <- list()
     
     infile <- paste("http://www.nhl.com/scores/htmlreports/",season,"/ES0",gcode,".HTM",sep="")
-    game.rec$es <- try(unlist(strsplit(gsub("\\t", "", gsub("\\r", "", getURL(infile))), "\n")), TRUE)
+    game.rec$es <- try(unlist(strsplit(gsub("\\t", "", gsub("\\r", "", RCurl::getURL(infile))), "\n")), TRUE)
     if (class(game.rec$es) == "try-error") game.rec$es <- NULL  #error.free <- FALSE
     
     infile <- paste("http://www.nhl.com/scores/htmlreports/",season,"/PL0",gcode,".HTM",sep="")
-    game.rec$pl <- try(unlist(strsplit(gsub("\\t", "", gsub("\\r", "", getURL(infile))), "\n")), TRUE)
+    game.rec$pl <- try(unlist(strsplit(gsub("\\t", "", gsub("\\r", "", RCurl::getURL(infile))), "\n")), TRUE)
     if (class(game.rec$pl) == "try-error") game.rec$pl <- NULL  #error.free <- FALSE
     
     ##see if x-y is there.
     infile <- paste0("http://live.nhl.com/GameData/",season,"/",substr(season,1,4),"0",gcode,"/PlayByPlay.json")
-    file2 <- try(getURL(infile), TRUE)
+    file2 <- try(RCurl::getURL(infile), TRUE)
     if (class(file2) != "try-error") {
-        game.rec$xy <- try(fromJSON(file2), TRUE)
+        game.rec$xy <- try(rjson::fromJSON(file2), TRUE)
         if (class(game.rec$xy) == "try-error") {warning("Could not recover x-y coordinates."); game.rec$xy <- NULL}
     } else {warning("Could not download x-y coordinate file."); game.rec$xy <- NULL}
     
@@ -216,8 +216,8 @@ download.games <- function (games=full.game.database(), rdata.folder="nhlr-data"
     success <- rep(FALSE, nrow(games))
     for (kk in 1:nrow(games)) if (games$status[kk] > 0) 
         success[kk] <- download.single.game(games$season[kk],
-                                            paste0(2+1*(games$session[kk]=="Playoffs"),
-                                                   games$gamenumber[kk]), ...)
+                                            games$gcode[kk], 
+                                            ...)
     return(success)
   
 }
@@ -483,11 +483,7 @@ construct.rosters.from.list <- function (roster.collection,  #raw list
                           stringsAsFactors=FALSE)
     if (is.null(roster.master)) roster.master <- blanky
 
-    ## save (roster.master, roster.collection, file="myrostercomp2.RData")
-
-    ## These are the players we drop in from outside sources.    
-        
-    #message("here")
+    ## These are the players we drop in from outside sources.
     if (!is.null(roster.dropin)) {
         message ("Evaluating externally supplied roster info.")
         
@@ -498,7 +494,7 @@ construct.rosters.from.list <- function (roster.collection,  #raw list
         match1 <- match(toupper(roster.dropin$numfirstlast),
                         toupper(roster.master$numfirstlast))
         
-        if (any(is.na(match1))) {
+        if (any(is.na(match1)) && length(match1 > 0)) {
             newrecs <- roster.dropin[is.na(match1),,drop=FALSE]
             newrecs[["index"]] <- nrow(roster.master) + 1:sum(is.na(match1))
         
@@ -548,11 +544,10 @@ construct.rosters.from.list <- function (roster.collection,  #raw list
             
             m2 <- match(toupper(newrecs$firstlast),
                         toupper(roster.master$firstlast))
-            
+            if (suppressWarnings( max(roster.master$player.id) ) == -Inf) maxRosterMaster <- 0 else maxRosterMaster <-max(roster.master$player.id)
             if (any(!is.na(m2))) newrecs$player.id[!is.na(m2)] <- roster.master$player.id[m2[!is.na(m2)]]
-            if (any(is.na(m2))) newrecs$player.id[is.na(m2)] <- max(roster.master$player.id) + 1:sum(is.na(m2))
-            
-            roster.master <- rbind(roster.master, newrecs)
+            if (any(is.na(m2))) newrecs$player.id[is.na(m2)] <- maxRosterMaster + 1:sum(is.na(m2))
+            roster.master <- rbind(as.data.frame(roster.master), as.data.frame(newrecs))
         }
         
         r1.match <- match(this.roster$numfirstlast,
@@ -643,8 +638,7 @@ compile.all.games <- function (rdata.folder="nhlr-data",
                                
                                ...) {
 
-    #library(nhlscrapr); rdata.folder="nhlr-data"; output.folder="source-data"; new.game.table=filter(gamesstart, season >= 20052006); seasons=NULL; verbose=FALSE; override.days.back=NULL; date.check=FALSE; roster.dropin=rosterprefab; reload.games=TRUE
-    
+    # Create dir -- will error if already existent, hence the surpress warnings
     suppressWarnings(dir.create(output.folder))
 
     if (file.exists(paste0(output.folder,"/nhlscrapr-core.RData"))) {
@@ -654,7 +648,7 @@ compile.all.games <- function (rdata.folder="nhlr-data",
     } else {
         message ("Creating game table and player data.")
         freshload <- TRUE
-        games <- full.game.database() #games <- subset(new.game.table, season %in% c("20022003", "20032004", "20052006"));   games <- games[13841:13962,]
+        games <- full.game.database()
         grand.data <- NULL
         roster.master <- NULL
         distance.adjust <- scoring.models <- shot.tables <- NULL
@@ -869,4 +863,3 @@ compile.all.games <- function (rdata.folder="nhlr-data",
     return(downloaded.games)
 
 }
-

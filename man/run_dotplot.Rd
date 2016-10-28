@@ -4,15 +4,15 @@
 \alias{run_dotplot}
 \title{run_dotplot}
 \usage{
-run_dotplot(grand.data, etype = c("SHOT", "GOAL"), colors = c("red",
-  "blue"))
+run_dotplot(grand.data, plot.etype = c("SHOT", "GOAL"),
+  plot.colors = c("red", "green"))
 }
 \arguments{
 \item{grand.data}{A game (or season/team/whatever) dataframe.}
 
-\item{etype}{Vector indicating event types to be plotted.}
+\item{plot.etype}{Vector indicating event types to be plotted.}
 
-\item{colors}{Vector giving color for each event type. Must be multiple of event type.}
+\item{plot.colors}{Vector giving color for each event type. Must be multiple of event type.}
 }
 \description{
 Produces a simple dot plot based on either total shots or total goals for a game dataframe.
