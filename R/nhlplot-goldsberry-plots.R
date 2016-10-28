@@ -259,13 +259,13 @@ shot.bin.set.blocks <- function (event.df,
 #' @return
 #' @export
 run_hexbin <- function(grand.data, type ="sg") {
-  grand.data$newxc = abs(grand.data$newxc)
+  grand.data$xcoord = abs(grand.data$xcoord)
   grand.data$shot.feature = NA
   hexshots = produce.hexshots(grand.data)
 
   # rawcounts
-  foo = data.frame(shots = nhl.hexbin(subset(grand.data,grand.data$etype == "SHOT")[,c("newyc","newxc")],point.grid())
-                   , goals = nhl.hexbin(subset(grand.data,grand.data$etype == "GOAL")[,c("newyc","newxc")],point.grid()))
+  foo = data.frame(shots = nhl.hexbin(subset(grand.data,grand.data$etype == "SHOT")[,c("ycoord","xcoord")],point.grid())
+                   , goals = nhl.hexbin(subset(grand.data,grand.data$etype == "GOAL")[,c("ycoord","xcoord")],point.grid()))
 
   bar = data.frame(bin = 1:16, shots =  nhl.zonebin.prime(foo$shots,point.grid()), goals =  nhl.zonebin.prime(foo$goals,point.grid()))
 
@@ -284,23 +284,23 @@ run_hexbin <- function(grand.data, type ="sg") {
 #'
 #' Produces a simple dot plot based on either total shots or total goals for a game dataframe.
 #'
-#' @param grand.data A game (or season/team/whatever) dataframe
-#' @param type "sg" for a combined shots and goals plot, "g" for a goals-only plot
+#' @param grand.data A game (or season/team/whatever) dataframe.
+#' @param etype Vector indicating event types to be plotted.
+#' @param colors Vector giving color for each event type. Must be multiple of event type.
 #'
 #' @return
 #' @export
-run_dotplot <- function(grand.data,type="sg") {
+run_dotplot <- function(grand.data,etype=c("SHOT","GOAL"),colors=c("red","blue")) {
+  
+  if ( length(etype) %% length(colors) != 0 ) {
+    stop('etype argument must be equal in length or a multiple of colors argument.')
+  }
+  
   rink.plot()
-  if (type=="sg") {
-    with( subset(grand.data, grand.data$etype == "SHOT"),
-          points(ycoord,(xcoord),pch=16,col='#55cc55',cex=1.5)
-    )
-    with(subset(grand.data,grand.data$etype == "GOAL"),
-         points(ycoord,abs(xcoord),pch=16,col='#5555cc',cex=1.5)
-    )
-  } else if (type=="g") {
-    with(subset(grand.data,grand.data$etype == "GOAL"),
-         points(ycoord,abs(xcoord),pch=16,col='#5555cc',cex=1.5)
+  ## my s/g colors: '#55cc55' , '#5555cc'
+  for (i in etype) {
+    with( subset(grand.data, grand.data$etype == etype[i]),
+          points(ycoord,(xcoord),pch=16,col=colors[i],cex=1.5)
     )
   }
 }
