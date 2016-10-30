@@ -12,7 +12,8 @@ Imports:
     RCurl,
     rjson,
     biglm,
-    bitops
+    bitops,
+    RSQLite
 Description: Compiling the NHL Real Time Scoring System Database for easy use in
     R
 License: GPL (>= 3)

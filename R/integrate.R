@@ -139,7 +139,6 @@ full.game.database <- function (extra.seasons=0) {
 #'
 #' @param rdata.folder Folder in which data from nhlscrapr is saved.
 #'
-#' @return
 #' @export
 current.games <- function (rdata.folder="nhlr-data") {
 

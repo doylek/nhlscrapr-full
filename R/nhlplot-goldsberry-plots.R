@@ -256,7 +256,6 @@ shot.bin.set.blocks <- function (event.df,
 #' @param grand.data A game (or season/team/whatever) dataframe
 #' @param type "sg" for a combined shots and goals plot, "g" for a goals-only plot
 #'
-#' @return
 #' @export
 run_hexbin <- function(grand.data, type ="sg") {
   grand.data$xcoord = abs(grand.data$xcoord)
@@ -288,7 +287,6 @@ run_hexbin <- function(grand.data, type ="sg") {
 #' @param plot.etype Vector indicating event types to be plotted.
 #' @param plot.colors Vector giving color for each event type. Must be multiple of event type.
 #'
-#' @return
 #' @export
 run_dotplot = function(grand.data,plot.etype=c("SHOT","GOAL"),plot.colors=c("red","green")) {
   

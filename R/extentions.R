@@ -1,8 +1,27 @@
-create_nhl_db(db_folder='db') {
+#' Create NHL database
+#' 
+#' IN DEVELOPMENT. Creates an SQLite database to hold nhlscrpr data. Need only run once per database instance. 
+#'
+#' @param db_folder Folder in which database will be created.
+#'
+#' @export
+#'
+create_nhl_db <- function(db_folder='db') {
   suppressWarnings(dir.create(db_folder))
   con <- dbConnect(SQLite(),'db/nhl_db') # RWC
 }
 
+#' Update Season in Database
+#' 
+#' Renews database records for specified season in database.
+#' 
+#' This function first removes all data from current season and then re-writes all data to database from the grand.data file. Seasons are automatically detected from the grand.data file. 
+#'
+#' @param grand.data Grand.data events dataframe to be written to database. 
+#'
+#' @return Returns list of gcodes that are held in updated database table for chosen season. 
+#' @export
+#'
 update_season_db <- function(grand.data) {
   
   con <- dbConnect(SQLite(),'db/nhl_db') # RWC
@@ -26,7 +45,16 @@ update_season_db <- function(grand.data) {
   
   invisible(dbDisconnect(con))
 }
-retrieve_season.R <- function(season) {
+#' Retrieve season
+#' 
+#' Retrieves a season of data from the database. 
+#'
+#' @param season Character. Season to extract from database, e.g. "20162017."
+#'
+#' @return data.frame containing data for season.  
+#' @export
+#'
+retrieve_season <- function(season) {
   message('Connecting to database..')
   con <- dbConnect(SQLite(),'db/nhl_db', flags = SQLITE_RO)
   return_statement <- paste0("select * from game_events where season = ",season)
