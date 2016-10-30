@@ -154,7 +154,7 @@ current.games <- function (rdata.folder="nhlr-data") {
 
 
 
-download.single.game <- function (season=20122013, gcode=20001, rdata.folder="nhlr-data", verbose=TRUE, wait=20) {
+download.single.game <- function (season=20122013, gcode=20001, rdata.folder="nhlr-data", verbose=TRUE, wait=10) {
     ##season="20122013"; gcode="20018"; rdata.folder="nhlr-data"; verbose=TRUE
     valid.seasons <- seq(20022003, 20202021, by=10001)[-3]
     if (!(season %in% valid.seasons)) stop(paste("Invalid season: ",season))
@@ -544,10 +544,10 @@ construct.rosters.from.list <- function (roster.collection,  #raw list
             
             m2 <- match(toupper(newrecs$firstlast),
                         toupper(roster.master$firstlast))
-            if (suppressWarnings( max(roster.master$player.id) ) == -Inf) maxRosterMaster <- 0 else maxRosterMaster <-max(roster.master$player.id)
+            #if (suppressWarnings( max(roster.master$player.id) ) == -Inf) maxRosterMaster <- 0 else maxRosterMaster <-
             if (any(!is.na(m2))) newrecs$player.id[!is.na(m2)] <- roster.master$player.id[m2[!is.na(m2)]]
-            if (any(is.na(m2))) newrecs$player.id[is.na(m2)] <- maxRosterMaster + 1:sum(is.na(m2))
-            roster.master <- rbind(as.data.frame(roster.master), as.data.frame(newrecs))
+            if (any(is.na(m2))) newrecs$player.id[is.na(m2)] <- max(roster.master$player.id) + 1:sum(is.na(m2))
+            roster.master <- bind_rows(roster.master, newrecs)
         }
         
         r1.match <- match(this.roster$numfirstlast,
