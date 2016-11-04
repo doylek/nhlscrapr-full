@@ -4,7 +4,7 @@
 \alias{create_nhl_db}
 \title{Create NHL database}
 \usage{
-create_nhl_db(db_folder = "db")
+create_nhl_db(db_folder = "db", db_name = "nhl_db")
 }
 \arguments{
 \item{db_folder}{Folder in which database will be created.}

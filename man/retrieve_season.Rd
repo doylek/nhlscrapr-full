@@ -4,10 +4,12 @@
 \alias{retrieve_season}
 \title{Retrieve season}
 \usage{
-retrieve_season(season)
+retrieve_season(season, database = "db/nhl_db")
 }
 \arguments{
 \item{season}{Character. Season to extract from database, e.g. "20162017."}
+
+\item{database}{String. Location of database to read data from.}
 }
 \value{
 data.frame containing data for season.

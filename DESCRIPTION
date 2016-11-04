@@ -7,13 +7,13 @@ Author: A.C. Thomas, Samuel L. Ventura
 Maintainer: A.C. Thomas <act@acthomas.ca>
 Depends:
     R (>= 2.15.0),
-    dplyr
+    dplyr,
+    RSQLite
 Imports:
     RCurl,
     rjson,
     biglm,
-    bitops,
-    RSQLite
+    bitops
 Description: Compiling the NHL Real Time Scoring System Database for easy use in
     R
 License: GPL (>= 3)

@@ -4,10 +4,12 @@
 \alias{update_season_db}
 \title{Update Season in Database}
 \usage{
-update_season_db(grand.data)
+update_season_db(grand.data, database = "db/nhl_db")
 }
 \arguments{
 \item{grand.data}{Grand.data events dataframe to be written to database.}
+
+\item{database}{String. Location of database to write data to.}
 }
 \value{
 Returns list of gcodes that are held in updated database table for chosen season.
